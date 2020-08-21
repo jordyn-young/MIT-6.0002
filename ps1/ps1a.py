@@ -4,8 +4,9 @@
 # Collaborators: None
 # Time:
 
-from ps1_partition import get_partitions
 import time
+sys.path.extend(['/Users/jordynyoung/Documents/Programming/Python/MIT 6.0002/MIT-6.0002/ps1'])
+from ps1_partition import get_partitions
 
 #================================
 # Part A: Transporting Space Cows
@@ -26,11 +27,10 @@ def load_cows(filename):
     """
     cows = {}
     with open(filename) as f:
-        read_data = (f.read()).splitlines()
+        read_data = f.read().splitlines()
             for entry in read_data:
                 temp = entry.split(',')
                 cows[temp[0]] = temp[1]
-    f.closed
     return cows
 
 # Problem 2
@@ -93,6 +93,25 @@ def brute_force_cow_transport(cows,limit=10):
     transported on a particular trip and the overall list containing all the
     trips
     """
+    cowsCopy = dict(cows)
+    result = {}
+
+    for partitions in get_partitions(cowsCopy.keys()):
+        for trip in partitions:
+            totalWeight = 0
+            score = []
+            for i in trip:
+                totalWeight += int(cowsCopy[i])
+                if totalWeight <= limit:
+                    score.append(1)
+                else:
+                    score.append(0)
+        number_trips = sum(score)
+        if 0 not in score:
+            result[partitions] = number_trips
+
+    print(min(result.values()))
+    
     # TODO: Your code here
     pass
         
