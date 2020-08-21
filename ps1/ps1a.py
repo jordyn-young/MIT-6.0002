@@ -5,8 +5,8 @@
 # Time:
 
 import time
-sys.path.extend(['/Users/jordynyoung/Documents/Programming/Python/MIT 6.0002/MIT-6.0002/ps1'])
-from ps1_partition import get_partitions
+from ps1.ps1_partition import get_partitions
+
 
 #================================
 # Part A: Transporting Space Cows
@@ -28,9 +28,9 @@ def load_cows(filename):
     cows = {}
     with open(filename) as f:
         read_data = f.read().splitlines()
-            for entry in read_data:
-                temp = entry.split(',')
-                cows[temp[0]] = temp[1]
+        for entry in read_data:
+            temp = entry.split(',')
+            cows[temp[0]] = temp[1]
     return cows
 
 # Problem 2
@@ -50,7 +50,7 @@ def greedy_cow_transport(cows,limit=10):
     Parameters:
     cows - a dictionary of name (string), weight (int) pairs
     limit - weight limit of the spaceship (an int)
-    
+
     Returns:
     A list of lists, with each inner list containing the names of cows
     transported on a particular trip and the overall list containing all the
@@ -71,50 +71,46 @@ def greedy_cow_transport(cows,limit=10):
         all_trips.append(current_trip)
     return all_trips
 
+
 # Problem 3
 def brute_force_cow_transport(cows,limit=10):
     """
     Finds the allocation of cows that minimizes the number of spaceship trips
     via brute force.  The brute force algorithm should follow the following method:
 
-    1. Enumerate all possible ways that the cows can be divided into separate trips 
+    1. Enumerate all possible ways that the cows can be divided into separate trips
         Use the given get_partitions function in ps1_partition.py to help you!
     2. Select the allocation that minimizes the number of trips without making any trip
         that does not obey the weight limitation
-            
+
     Does not mutate the given dictionary of cows.
 
     Parameters:
     cows - a dictionary of name (string), weight (int) pairs
     limit - weight limit of the spaceship (an int)
-    
+
     Returns:
     A list of lists, with each inner list containing the names of cows
     transported on a particular trip and the overall list containing all the
     trips
     """
-    cowsCopy = dict(cows)
-    result = {}
+    names = list(cows.keys())
+    best_partition = names
+    for partition in get_partitions(names):
+        for trip in partition:
+            total_weight = 0
+            impossible_partition = False
+            for cow in trip:
+                current_cow_weight = int(cows[cow])
+                total_weight += current_cow_weight
+            if total_weight > limit:
+                impossible_partition = True
+                break
+        if not impossible_partition and len(partition) < len(best_partition):
+            best_partition = partition
+    return best_partition
 
-    for partitions in get_partitions(cowsCopy.keys()):
-        for trip in partitions:
-            totalWeight = 0
-            score = []
-            for i in trip:
-                totalWeight += int(cowsCopy[i])
-                if totalWeight <= limit:
-                    score.append(1)
-                else:
-                    score.append(0)
-        number_trips = sum(score)
-        if 0 not in score:
-            result[partitions] = number_trips
 
-    print(min(result.values()))
-    
-    # TODO: Your code here
-    pass
-        
 # Problem 4
 def compare_cow_transport_algorithms():
     """
@@ -129,5 +125,20 @@ def compare_cow_transport_algorithms():
     Returns:
     Does not return anything.
     """
-    # TODO: Your code here
-    pass
+    cows = load_cows('ps1/ps1_cow_data.txt')
+    start = time.time()
+    greedy_cow_transport(cows, limit=10)
+    end = time.time()
+    print('greedy_cow_transport time:', (end - start), 'seconds')
+
+    start = time.time()
+    brute_force_cow_transport(cows, limit=10)
+    end = time.time()
+    print('brute_force_cow_transport time: ', (end - start), 'seconds')
+
+
+if __name__ == '__main__':
+    cows = load_cows('ps1/ps1_cow_data.txt')
+    greedy_cow_transport(cows, limit=10)
+    brute_force_cow_transport(cows, limit=10)
+    compare_cow_transport_algorithms()
