@@ -1,7 +1,7 @@
 ###########################
 # 6.0002 Problem Set 1b: Space Change
-# Name:
-# Collaborators:
+# Name: Jordyn Young
+# Collaborators: None
 # Time:
 # Author: charz, cdenise
 
@@ -10,20 +10,30 @@
 #================================
 
 # Problem 1
-def dp_make_weight(egg_weights, target_weight, memo = {}):
+def dp_make_weight(egg_weights, target_weight):
     """
     Find number of eggs to bring back, using the smallest number of eggs. Assumes there is
     an infinite supply of eggs of each weight, and there is always a egg of value 1.
     
     Parameters:
-    egg_weights - tuple of integers, available egg weights sorted from smallest to largest value (1 = d1 < d2 < ... < dk)
+    egg_weights - tuple of integers, available egg weights sorted from smallest to largest value
+                  (1 = d1 < d2 < ... < dk)
     target_weight - int, amount of weight we want to find eggs to fit
-    memo - dictionary, OPTIONAL parameter for memoization (you may not need to use this parameter depending on your implementation)
+    memo - dictionary, OPTIONAL parameter for memoization
+           (you may not need to use this parameter depending on your implementation)
     
     Returns: int, smallest number of eggs needed to make target weight
     """
-    # TODO: Your code here
-    pass
+    sorted_eggs = sorted(egg_weights, reverse=True)
+    eggs_taken = 0
+    available_weight = target_weight
+    for egg in range(len(sorted_eggs)):
+        number_eggs_to_take = available_weight // sorted_eggs[egg]
+        eggs_taken += number_eggs_to_take
+        available_weight -= number_eggs_to_take * sorted_eggs[egg]
+        if available_weight == 0:
+            break
+    return eggs_taken
 
 # EXAMPLE TESTING CODE, feel free to add more if you'd like
 if __name__ == '__main__':
