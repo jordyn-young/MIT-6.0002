@@ -1,14 +1,14 @@
 # 6.0002 Problem Set 5
 # Graph optimization
-# Name:
-# Collaborators:
+# Name: Jordyn Young
+# Collaborators: None
 # Time:
 
 #
 # Finding shortest paths through MIT buildings
 #
 import unittest
-from graph import Digraph, Node, WeightedEdge
+from ps2.graph import Digraph, Node, WeightedEdge
 
 #
 # Problem 2: Building up the Campus Map
@@ -20,7 +20,9 @@ from graph import Digraph, Node, WeightedEdge
 # represented?
 #
 # Answer:
-#
+# The graph's nodes represent buildings, while the graph's edges are the connections between each building (i.e. node)
+# The distance between two buildings is represented by the weighted edges, which includes the total distance
+# and the outdoor distance between the two buildings.
 
 
 # Problem 2b: Implementing load_map
@@ -42,23 +44,46 @@ def load_map(map_filename):
     Returns:
         a Digraph representing the map
     """
-
-    # TODO
     print("Loading map from file...")
+
+    Di_Graph = Digraph()
+    with open(map_filename) as f:
+        read_data = f.read()
+        read_data = read_data.split('\n')
+        for entry in read_data:
+            if entry == '':
+                break
+            else:
+                entry = entry.split(' ')
+                src = Node(entry[0])
+                dest = Node(entry[1])
+                total_distance = int(entry[2])
+                outside_distance = int(entry[3])
+                if not Di_Graph.has_node(src):
+                    Di_Graph.add_node(src)
+                if not Di_Graph.has_node(dest):
+                    Di_Graph.add_node(dest)
+                weighted_edge = WeightedEdge(src, dest, total_distance, outside_distance)
+                Di_Graph.add_edge(weighted_edge)
+    return Di_Graph
+
 
 # Problem 2c: Testing load_map
 # Include the lines used to test load_map below, but comment them out
-
+# test_data = '/home/jordyn/Documents/MIT-6.0002/ps2/test_load_map.txt'
+# test = load_map(test_data)
+# print(test)
 
 #
-# Problem 3: Finding the Shorest Path using Optimized Search Method
+# Problem 3: Finding the Shortest Path using Optimized Search Method
 #
 # Problem 3a: Objective function
 #
 # What is the objective function for this problem? What are the constraints?
 #
 # Answer:
-#
+# The objective function for this problem calculates the shortest path between the source and destination buildings.
+# The constraints are the distances between buildings (nodes).
 
 # Problem 3b: Implement get_best_path
 def get_best_path(digraph, start, end, path, max_dist_outdoors, best_dist,
@@ -95,8 +120,21 @@ def get_best_path(digraph, start, end, path, max_dist_outdoors, best_dist,
         If there exists no path that satisfies max_total_dist and
         max_dist_outdoors constraints, then return None.
     """
-    # TODO
-    pass
+    path += [start]
+
+    if not digraph.has_node(start):
+        raise ValueError('start node is not in the Digraph')
+    elif not digraph.has_node(end):
+        raise ValueError('end node is not in the Digraph')
+    elif start == end:
+        return path
+    else:
+        for node in digraph.get_edges_for_node(start):
+            if
+
+    total_dist = 0
+    outdoors_dist = 0
+
 
 
 # Problem 3c: Implement directed_dfs
